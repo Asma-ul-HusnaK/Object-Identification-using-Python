@@ -16,3 +16,15 @@ def detect_shapes(image_path, target_size=(800, 800)):
     if img is None:
         print("Error: Could not load image. Please check the file path.")
         return
+
+    img_resized = cv2.resize(img, target_size)
+    gray = cv2.cvtColor(img_resized, cv2.COLOR_BGR2GRAY)
+
+    # --- Preprocessing ---
+    #blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    _, thresh = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
+    kernel = np.ones((3, 3), np.uint8)
+    clean = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
+
+    edges = cv2.Canny(clean, 100, 200)
+    #combined = cv2.bitwise_or(clean, edges)
