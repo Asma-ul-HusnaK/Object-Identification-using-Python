@@ -41,4 +41,75 @@ def detect_shapes(image_path, target_size=(800, 800)):
         "Circle": 0,
         "Polygon": 0
     }
+    # --- Shape Detection ---
+    for cnt in contours:
+        area = cv2.contourArea(cnt)
+        if area < 150:
+            continue
+
+        perimeter = cv2.arcLength(cnt, True)
+        if perimeter == 0:
+            continue
+
+        approx = cv2.approxPolyDP(cnt, 0.02 * perimeter, True)
+        vertices = len(approx)
+        x, y, w, h = cv2.boundingRect(approx)
+        aspect_ratio = float(w) / h
+
+        shape_name = "Unknown"
+        circularity = (4 * np.pi * area) / (perimeter * perimeter)
+
+        if circularity > 0.83 and vertices > 6:
+            shape_name = "Circle"
+        elif circularity > 0.6 and vertices > 6:
+            shape_name = "Polygon"
+        else:
+            if vertices == 3:
+                shape_name = "Triangle"
+            elif vertices == 4:
+                def angle(pt1, pt2, pt3):
+                    v1 = pt1 - pt2
+                    v2 = pt3 - pt2
+                    cos_angle = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+                    return np.degrees(np.arccos(cos_angle))
+
+                angles = []
+                for i in range(4):
+                    pt1 = approx[i][0]
+                    pt2 = approx[(i + 1) % 4][0]
+                    pt3 = approx[(i + 2) % 4][0]
+                    angles.append(angle(pt1, pt2, pt3))
+
+                if all(85 <= a <= 95 for a in angles):
+                    if 0.95 <= aspect_ratio <= 1.05:
+                        shape_name = "Square"
+                    else:
+                        shape_name = "Rectangle"
+                else:
+                    shape_name = "Quadrilateral"
+            elif vertices == 5:
+                shape_name = "Pentagon"
+            elif vertices == 6:
+                shape_name = "Hexagon"
+            elif vertices > 6:
+                shape_name = "Polygon"
+
+        if shape_name in shape_counts:
+            shape_counts[shape_name] += 1
+        else:
+            shape_counts["Polygon"] += 1
+
+        margin = 10
+        x1 = max(x - margin, 0)
+        y1 = max(y - margin, 0)
+        x2 = min(x + w + margin, img_resized.shape[1] - 1)
+        y2 = min(y + h + margin, img_resized.shape[0] - 1)
+
+        cv2.rectangle(img_resized, (x1, y1), (x2, y2), (0, 0, 0), 2)
+        cv2.putText(img_resized, shape_name, (x1, y1 - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+
+    print("\n Shape Counts Detected:")
+    for shape, count in shape_counts.items():
+        print(f"{shape}: {count}")
 
