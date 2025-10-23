@@ -112,4 +112,15 @@ def detect_shapes(image_path, target_size=(800, 800)):
     print("\n Shape Counts Detected:")
     for shape, count in shape_counts.items():
         print(f"{shape}: {count}")
+        
+ #  Display image here inside the function
+    show_image("Threshold_image", thresh)
+    show_image("Detected Shapes", img_resized)
+
+
+# --- Run the detection ---
+if __name__ == "__main__":
+    image_path = "E:\DS project\Simple shapes project\Simple shape 2.png"  # Replace with your image path
+    detect_shapes(image_path)
+
 
