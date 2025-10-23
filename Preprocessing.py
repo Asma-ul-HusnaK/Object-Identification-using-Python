@@ -21,7 +21,7 @@ def detect_shapes(image_path, target_size=(800, 800)):
     gray = cv2.cvtColor(img_resized, cv2.COLOR_BGR2GRAY)
 
     # --- Preprocessing ---
-    #blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+blurred = cv2.GaussianBlur(gray, (5, 5), 0)
     _, thresh = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
     kernel = np.ones((3, 3), np.uint8)
     clean = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
