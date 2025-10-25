@@ -27,7 +27,6 @@ def detect_shapes(image_path, target_size=(800, 800)):
     clean = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
 
     edges = cv2.Canny(clean, 100, 200)
-    #combined = cv2.bitwise_or(clean, edges)
     
     # --- Find contours ---
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -44,14 +43,11 @@ def detect_shapes(image_path, target_size=(800, 800)):
     # --- Shape Detection ---
     for cnt in contours:
         area = cv2.contourArea(cnt)
-        if area < 150:
-            continue
 
         perimeter = cv2.arcLength(cnt, True)
-        if perimeter == 0:
-            continue
 
-        approx = cv2.approxPolyDP(cnt, 0.02 * perimeter, True)
+        approx = cv2.approxPolyDP(cnt, 0.02*perimeter, True)
+        #print(approx)
         vertices = len(approx)
         x, y, w, h = cv2.boundingRect(approx)
         aspect_ratio = float(w) / h
@@ -120,7 +116,7 @@ def detect_shapes(image_path, target_size=(800, 800)):
 
 # --- Run the detection ---
 if __name__ == "__main__":
-    image_path = "E:\DS project\Simple shapes project\Simple shape 2.png"  # Replace with your image path
+    image_path = "E:\DS project\Git_push\download.jpeg"  # Replace with your image path
     detect_shapes(image_path)
 
 
