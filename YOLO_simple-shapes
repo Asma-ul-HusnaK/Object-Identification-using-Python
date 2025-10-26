@@ -29,3 +29,45 @@ results = model.train(
     exist_ok=True,             # overwrite if folder already exists
     save=True,                 # save final weights
 )
+
+
+from ultralytics import YOLO
+from IPython.display import Image, display
+import os
+import random
+
+# Loading the trained model
+weights_path = r"E:\DS project\YOLO_SIMPLE_SHAPES\runs\train\yolov8_custom\weights\best.pt"
+model = YOLO(weights_path)
+
+# Testing the images
+test_folder = r"E:\DS project\YOLO_SIMPLE_SHAPES\YOLO_DS.Project-7\test\images"
+
+# chechng for a random image
+all_images = [f for f in os.listdir(test_folder) if f.lower().endswith(('.jpg', '.png'))]
+random_image = random.choice(all_images)
+image_path = os.path.join(test_folder, random_image)
+
+print(f"Running inference on: {image_path}")
+
+# displaying bounding boxes with running predictions
+results = model.predict(
+    source=image_path,
+    conf=0.5,
+    save=True,       # saves annotated image
+    imgsz=640,
+    device='cpu'
+)
+
+# Annoted image path
+annotated_dir = results[0].save_dir
+annotated_image_path = os.path.join(annotated_dir, random_image)
+
+print(f"Annotated image saved at: {annotated_image_path}")
+
+#final image display - result
+display(Image(filename=annotated_image_path))
+
+
+
+
