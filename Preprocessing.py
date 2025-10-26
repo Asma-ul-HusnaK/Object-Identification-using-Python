@@ -17,12 +17,12 @@ def detect_shapes(image_path, target_size=(800, 800)):
         print("Error: Could not load image. Please check the file path.")
         return
 
-    img_resized = cv2.resize(img, target_size)
-    gray = cv2.cvtColor(img_resized, cv2.COLOR_BGR2GRAY)
+    #img_resized = cv2.resize(img, target_size)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # --- Preprocessing ---
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    _, thresh = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY_INV)
+    _, thresh = cv2.threshold(gray, 220, 255, cv2.THRESH_BINARY)
     kernel = np.ones((3, 3), np.uint8)
     clean = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=2)
 
@@ -37,7 +37,7 @@ def detect_shapes(image_path, target_size=(800, 800)):
         "Quadrilateral": 0,
         "Pentagon": 0,
         "Hexagon": 0,
-        "Circle": 0,
+        "Oval": 0,
         "Polygon": 0
     }
     # --- Shape Detection ---
@@ -55,10 +55,9 @@ def detect_shapes(image_path, target_size=(800, 800)):
         shape_name = "Unknown"
         circularity = (4 * np.pi * area) / (perimeter * perimeter)
 
-        if circularity > 0.83 and vertices > 6:
-            shape_name = "Circle"
-        elif circularity > 0.6 and vertices > 6:
-            shape_name = "Polygon"
+        if circularity > 0.83 and vertices >6:
+           shape_name = "Oval"
+        
         else:
             if vertices == 3:
                 shape_name = "Triangle"
@@ -87,7 +86,7 @@ def detect_shapes(image_path, target_size=(800, 800)):
                 shape_name = "Pentagon"
             elif vertices == 6:
                 shape_name = "Hexagon"
-            elif vertices > 6:
+            else:
                 shape_name = "Polygon"
 
         if shape_name in shape_counts:
@@ -95,15 +94,15 @@ def detect_shapes(image_path, target_size=(800, 800)):
         else:
             shape_counts["Polygon"] += 1
 
-        margin = 10
+        margin = 6
         x1 = max(x - margin, 0)
         y1 = max(y - margin, 0)
-        x2 = min(x + w + margin, img_resized.shape[1] - 1)
-        y2 = min(y + h + margin, img_resized.shape[0] - 1)
+        x2 = min(x + w + margin, img.shape[1] - 1)
+        y2 = min(y + h + margin, img.shape[0] - 1)
 
-        cv2.rectangle(img_resized, (x1, y1), (x2, y2), (0, 0, 0), 2)
-        cv2.putText(img_resized, shape_name, (x1, y1 - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 0), 1)
+        cv2.putText(img, shape_name, (x1, y1 - 2),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
 
     print("\n Shape Counts Detected:")
     for shape, count in shape_counts.items():
@@ -111,7 +110,7 @@ def detect_shapes(image_path, target_size=(800, 800)):
         
  #  Display image here inside the function
     show_image("Threshold_image", thresh)
-    show_image("Detected Shapes", img_resized)
+    show_image("Detected Shapes", img)
 
 
 # --- Run the detection ---
