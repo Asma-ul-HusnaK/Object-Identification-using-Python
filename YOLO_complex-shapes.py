@@ -64,5 +64,22 @@ display_img = PILImage.fromarray(rgb_img)
 display(display_img)
 
 
+#Path to the external image you want to test
+image_path = r"E:\DS project\YOLO_DORAEMON_NEW\download (2).png"
+
+#Run prediction
+results = model.predict(source=image_path, conf=0.25, save=False)
+
+#Get annotated image and fix color
+# results[0].plot() returns an image array (usually RGB, but sometimes interpreted as BGR)
+annotated_img = results[0].plot()
+
+# Convert BGR to RGB to ensure correct display
+rgb_img = cv2.cvtColor(annotated_img, cv2.COLOR_BGR2RGB)
+
+#Display image in Jupyter
+display_img = PILImage.fromarray(rgb_img)
+display(display_img)
+
 
             
