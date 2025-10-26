@@ -17,7 +17,6 @@ def detect_shapes(image_path, target_size=(800, 800)):
         print("Error: Could not load image. Please check the file path.")
         return
 
-    #img_resized = cv2.resize(img, target_size)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # --- Preprocessing ---
