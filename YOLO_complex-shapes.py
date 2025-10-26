@@ -82,4 +82,66 @@ display_img = PILImage.fromarray(rgb_img)
 display(display_img)
 
 
-            
+ #  $$$$ ____TESTING A VIDEO_____ $$$$ 
+
+from collections import Counter
+
+# Load your trained model
+weights_path = r"E:\DS project\YOLO_DORAEMON_NEW\runs\detect\train7\weights\best.pt"
+model = YOLO(weights_path)
+
+# Path to your input video
+video_path = r"E:\DS project\YOLO_DORAEMON_NEW\test_video.mp4"
+
+# Open video file
+cap = cv2.VideoCapture(video_path)
+
+# Get video details
+fps = int(cap.get(cv2.CAP_PROP_FPS))
+width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+# Define video writer to save the output
+output_path = r"E:\DS project\YOLO_DORAEMON_NEW\output_detected_video.mp4"
+out = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+
+# Initialize global counter
+total_counts = Counter()
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # Run YOLO prediction on each frame
+    results = model.predict(frame, conf=0.25, verbose=False)
+
+    # Draw bounding boxes and labels
+    annotated_frame = results[0].plot()
+
+    # Count detected objects for this frame
+    class_ids = results[0].boxes.cls.cpu().numpy().astype(int)
+    class_names = [results[0].names[i] for i in class_ids]
+    total_counts.update(class_names)
+
+    # Show live window (optional)
+    cv2.imshow("YOLO Video Detection", annotated_frame)
+
+    # Write annotated frame to output video
+    out.write(annotated_frame)
+
+    # Press 'q' to stop early
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+out.release()
+cv2.destroyAllWindows()
+
+# Print summary of total objects detected in video
+print("\n Total Object Counts in Video:")
+for label, count in total_counts.items():
+    print(f"{label}: {count}")
+
+print(f"\n Output video saved at: {output_path}")
+           
