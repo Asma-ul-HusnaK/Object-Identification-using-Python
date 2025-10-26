@@ -11,7 +11,7 @@ def show_image(title, image):
     plt.show()
 
 def detect_shapes(image_path, target_size=(800, 800)):
-    # Load and resize image
+    # Load the image
     img = cv2.imread(image_path)
     if img is None:
         print("Error: Could not load image. Please check the file path.")
