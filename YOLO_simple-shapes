@@ -12,3 +12,20 @@ rf = Roboflow(api_key="QQoeAj8Mx9NUigim0MXR")
 project = rf.workspace("divyanshi-sctp1").project("yolo_ds-project-qpbnj")
 version = project.version(7)
 dataset = version.download("yolov8")
+
+from ultralytics import YOLO
+
+model = YOLO("yolov8n.pt")
+
+# Train the model
+results = model.train(
+    data="E:\DS project\YOLO_SIMPLE_SHAPES\YOLO_DS.Project-7\data.yaml",  # path to your dataset YAML
+    epochs=60,                 # number of epochs
+    imgsz=640,                 # image size
+    batch=16,                  # batch size
+    project="runs/train",      # main folder to store runs
+    name="yolov8_custom",      # subfolder name (will always overwrite)
+    patience=10,               # Early stopping if no improvement
+    exist_ok=True,             # overwrite if folder already exists
+    save=True,                 # save final weights
+)
