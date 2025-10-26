@@ -1,0 +1,16 @@
+names:
+- doraemon
+- jaian
+- nobita
+- shizuka
+- suneo
+nc: 5
+roboflow:
+  license: CC BY 4.0
+  project: fujiko-5hpzt
+  url: https://universe.roboflow.com/divyanshi-sctp1/fujiko-5hpzt/dataset/3
+  version: 3
+  workspace: divyanshi-sctp1
+test: ../test/images
+train: ../train/images
+val: ../valid/images

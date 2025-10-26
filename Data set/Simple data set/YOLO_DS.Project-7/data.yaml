@@ -1,0 +1,22 @@
+names:
+- Circle
+- Heptagon
+- Hexagon
+- Kite
+- Oval
+- Pentagon
+- Rectangle
+- Semicircle
+- Star
+- Triangle
+- square
+nc: 11
+roboflow:
+  license: CC BY 4.0
+  project: yolo_ds-project-qpbnj
+  url: https://universe.roboflow.com/divyanshi-sctp1/yolo_ds-project-qpbnj/dataset/7
+  version: 7
+  workspace: divyanshi-sctp1
+test: ../test/images
+train: ../train/images
+val: ../valid/images
