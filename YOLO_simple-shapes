@@ -73,11 +73,8 @@ import os, glob
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-# --- Load your trained model ---
-weights_path = r"E:\DS project\YOLO_SIMPLE_SHAPES\runs\train\yolov8_custom\weights\best.pt"
-model = YOLO(weights_path)
 
-# --- External image path ---
+#Path of the image
 image_path = r"E:\DS project\YOLO_SIMPLE_SHAPES\download.png"
 
 if not os.path.exists(image_path):
@@ -100,9 +97,9 @@ else:
         latest_image = max(annotated_images, key=os.path.getctime)
         print(f"\n Annotated image saved at: {latest_image}\n")
 
-        #  Display using Matplotlib with large size
+        #  Displaying the image using Matplotlib with large size
         img = mpimg.imread(latest_image)
-        plt.figure(figsize=(8, 4))  # (width, height) in inches — increase for larger image
+        plt.figure(figsize=(8, 4))  # (width, height) in inches
         plt.imshow(img)
         plt.axis('off')
         plt.show()
