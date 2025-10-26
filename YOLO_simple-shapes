@@ -31,7 +31,7 @@ results = model.train(
 )
 
 
-from ultralytics import YOLO
+
 from IPython.display import Image, display
 import os
 import random
@@ -68,6 +68,46 @@ print(f"Annotated image saved at: {annotated_image_path}")
 #final image display - result
 display(Image(filename=annotated_image_path))
 
+
+import os, glob
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
+# --- Load your trained model ---
+weights_path = r"E:\DS project\YOLO_SIMPLE_SHAPES\runs\train\yolov8_custom\weights\best.pt"
+model = YOLO(weights_path)
+
+# --- External image path ---
+image_path = r"E:\DS project\YOLO_SIMPLE_SHAPES\download.png"
+
+if not os.path.exists(image_path):
+    print(f" File not found: {image_path}")
+else:
+    print(f" Running inference on: {image_path}")
+
+    results = model.predict(
+        source=image_path,
+        conf=0.5,
+        save=True,
+        imgsz=640,
+        device='cpu'
+    )
+
+    annotated_dir = results[0].save_dir
+    annotated_images = glob.glob(os.path.join(annotated_dir, "*.jpg")) + glob.glob(os.path.join(annotated_dir, "*.png"))
+
+    if annotated_images:
+        latest_image = max(annotated_images, key=os.path.getctime)
+        print(f"\n Annotated image saved at: {latest_image}\n")
+
+        #  Display using Matplotlib with large size
+        img = mpimg.imread(latest_image)
+        plt.figure(figsize=(8, 4))  # (width, height) in inches — increase for larger image
+        plt.imshow(img)
+        plt.axis('off')
+        plt.show()
+    else:
+        print(" No annotated image found in:", annotated_dir)
 
 
 
